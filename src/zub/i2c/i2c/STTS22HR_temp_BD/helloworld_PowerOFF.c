@@ -18,7 +18,7 @@
  */
 
 #include <stdio.h>
-#include "platform.h" 
+#include "platform.h"
 #include "xil_printf.h"
 #include "xil_types.h"
 #include <xil_io.h>
@@ -29,7 +29,7 @@
 #include "sleep.h"
 
 
-#define BD_REG32_ADDR       XPAR_AXIL_REG32_0_BASEADDR
+#define BD_REG32_ADDR       PL_REG32_ADDR
 #define IIC_BASE_ADDRESS    XPAR_AXI_IIC_0_BASEADDR
 
 /*
@@ -96,7 +96,7 @@ int main()
       } else if (Ch == 'g') {   STTS22HTR_Read(IIC_BASE_ADDRESS,0x07,1); // High MSB
       } else if (Ch == 'h') {   
       } else if (Ch == 'i') {   STTS22HTR_Read(IIC_BASE_ADDRESS,0x04,1); // CTRL
-      } else if (Ch == 'j') {   STTS22HTR_Write(IIC_BASE_ADDRESS,0x04,0x4); // CTRL
+      } else if (Ch == 'j') {   STTS22HTR_Write(IIC_BASE_ADDRESS,0x04,0x4); // CTRL - write this first to configure/enable temp sensor
       } else if (Ch == 'k') {   
       } else if (Ch == 'l') {   STTS22HTR_GetTemp(IIC_BASE_ADDRESS,1);
       } else if (Ch == 'm') {   
