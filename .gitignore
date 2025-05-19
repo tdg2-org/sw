@@ -1,5 +1,16 @@
 # git is case sensitive by default
 
-work*
+# Ignore everything
+/*
 
+# Allow top-level files
+!.gitignore
+!README.md
+
+# Allow 
+!src/
+!src/**/
+
+!src/**/*.c
+!src/**/*.cpp
 
