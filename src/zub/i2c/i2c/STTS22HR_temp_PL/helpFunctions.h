@@ -1,6 +1,6 @@
 #include "xparameters.h"
 
-#define PL_REG32_ADDR   XPAR_AXIL_REG32_0_BASEADDR
+#define PL_REG32_ADDR   XPAR_PL_AXIL_REG32_0_BASEADDR
 
 // GPIO Module UG1087
 #define GPIO_MIO_ADDR   XPAR_GPIO_BASEADDR

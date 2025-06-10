@@ -7,43 +7,122 @@
 
 void versionCtrl(void) {
 
-    static unsigned gitL,gitM,timeStamp,gitLscr,gitMscr,gitLBD,gitMBD,timeStampBD;
+    static unsigned gitLtop,gitLscr,gitLBD,gitLcom,gitLsw,gitLip;
+    static unsigned gitMtop,gitMscr,gitMBD,gitMcom,gitMsw,gitMip;
+    static unsigned tsTop,tsBD,tsScripts,tsCom,tsSw,tsIp; // TimeStamp
 
-    gitLBD = Xil_In32(PL_REG32_ADDR + 0x24); // gitl
-    gitMBD = Xil_In32(PL_REG32_ADDR + 0x28); // gitm
-    timeStampBD = Xil_In32(PL_REG32_ADDR + 0x2C); // timestamp
+    //top
+    gitLtop = Xil_In32(PL_REG32_ADDR + 0x0);
+    gitMtop = Xil_In32(PL_REG32_ADDR + 0x4);   
+    tsTop = Xil_In32(PL_REG32_ADDR + 0x8); 
 
-    gitLscr = Xil_In32(PL_REG32_ADDR + 0xC); // gitl
-    gitMscr = Xil_In32(PL_REG32_ADDR + 0x10); // gitm
+    //scripts
+    gitLscr = Xil_In32(PL_REG32_ADDR + 0xC); 
+    gitMscr = Xil_In32(PL_REG32_ADDR + 0x10); 
+    tsScripts = Xil_In32(PL_REG32_ADDR + 0x14);
 
-    gitL = Xil_In32(PL_REG32_ADDR + 0x0); // gitl
-    gitM = Xil_In32(PL_REG32_ADDR + 0x4); // gitm
-    timeStamp = Xil_In32(PL_REG32_ADDR + 0x8); // timestamp
+    //common
+    gitLcom = Xil_In32(PL_REG32_ADDR + 0x18);
+    gitMcom = Xil_In32(PL_REG32_ADDR + 0x1C);
+    tsCom = Xil_In32(PL_REG32_ADDR + 0x20); 
+
+    //bd
+    gitLBD = Xil_In32(PL_REG32_ADDR + 0x24);
+    gitMBD = Xil_In32(PL_REG32_ADDR + 0x28);
+    tsBD = Xil_In32(PL_REG32_ADDR + 0x2C); 
+
+    //sw
+    gitLsw = Xil_In32(PL_REG32_ADDR + 0x30);
+    gitMsw = Xil_In32(PL_REG32_ADDR + 0x34);
+    tsSw = Xil_In32(PL_REG32_ADDR + 0x38); 
+
+    //ip
+    gitLip = Xil_In32(PL_REG32_ADDR + 0x3c);
+    gitMip = Xil_In32(PL_REG32_ADDR + 0x40);
+    tsIp = Xil_In32(PL_REG32_ADDR + 0x44); 
 
     static unsigned sec,min,hr,yr,mon,day;
-    //sec = (timeStamp & (((1 << numBits) - 1) << startBit)) >> startBit;   //  09B1219F  Fri Mar  1 18:06:31 2024
-    sec = (timeStamp & (((1 << 6) - 1) << 0)) >> 0;
-    min = (timeStamp & (((1 << 6) - 1) << 6)) >> 6;
-    hr  = (timeStamp & (((1 << 5) - 1) << 12)) >> 12;
-    yr  = (timeStamp & (((1 << 6) - 1) << 17)) >> 17;
-    mon = (timeStamp & (((1 << 4) - 1) << 23)) >> 23;
-    day = (timeStamp & (((1 << 5) - 1) << 27)) >> 27;
+    //sec = (tsTop & (((1 << numBits) - 1) << startBit)) >> startBit;   //  09B1219F  Fri Mar  1 18:06:31 2024
 
-    xil_printf("\n\r************ PL VERSION ****************\n\r");
-    xil_printf("  PL TIMESTAMP:%08x = %02d/%02d/%02d - %02d:%02d:%02d\n\r",timeStamp,mon,day,yr,hr,min,sec); // 0's mean zero padded on left (UG643)
+    /* top */
+    sec = (tsTop & (((1 << 6) - 1) << 0)) >> 0;
+    min = (tsTop & (((1 << 6) - 1) << 6)) >> 6;
+    hr  = (tsTop & (((1 << 5) - 1) << 12)) >> 12;
+    yr  = (tsTop & (((1 << 6) - 1) << 17)) >> 17;
+    mon = (tsTop & (((1 << 4) - 1) << 23)) >> 23;
+    day = (tsTop & (((1 << 5) - 1) << 27)) >> 27;
 
-    sec = (timeStampBD & (((1 << 6) - 1) << 0)) >> 0;
-    min = (timeStampBD & (((1 << 6) - 1) << 6)) >> 6;
-    hr  = (timeStampBD & (((1 << 5) - 1) << 12)) >> 12;
-    yr  = (timeStampBD & (((1 << 6) - 1) << 17)) >> 17;
-    mon = (timeStampBD & (((1 << 4) - 1) << 23)) >> 23;
-    day = (timeStampBD & (((1 << 5) - 1) << 27)) >> 27;
+    xil_printf("\n\r************ TimeStamps ****************\n\r");
+    xil_printf("  PL      : %08x = %02d/%02d/%02d - %02d:%02d:%02d\n\r",tsTop,mon,day,yr,hr,min,sec); // 0's mean zero padded on left (UG643)
+    //xil_printf("  PL Git Hash: %08x%08x\n\r",gitMtop,gitLtop);
 
-    xil_printf("  BD TIMESTAMP:%08x = %02d/%02d/%02d - %02d:%02d:%02d\n\r",timeStampBD,mon,day,yr,hr,min,sec); // 0's mean zero padded on left (UG643)
-    xil_printf("  Scripts Git Hash: %08x%08x\n\r",gitMscr,gitLscr);
-    xil_printf("  BD Git Hash: %08x%08x\n\r",gitMBD,gitLBD);
-    xil_printf("  PL Git Hash: %08x%08x\n\r",gitM,gitL);
-    xil_printf("  %08x_%08x\n\r",timeStamp,gitM);
+    /* BD */
+    sec = (tsBD & (((1 << 6) - 1) << 0)) >> 0;
+    min = (tsBD & (((1 << 6) - 1) << 6)) >> 6;
+    hr  = (tsBD & (((1 << 5) - 1) << 12)) >> 12;
+    yr  = (tsBD & (((1 << 6) - 1) << 17)) >> 17;
+    mon = (tsBD & (((1 << 4) - 1) << 23)) >> 23;
+    day = (tsBD & (((1 << 5) - 1) << 27)) >> 27;
+
+    xil_printf("  BD      : %08x = %02d/%02d/%02d - %02d:%02d:%02d\n\r",tsBD,mon,day,yr,hr,min,sec); // 0's mean zero padded on left (UG643)
+    //xil_printf("  BD Git Hash: %08x%08x\n\r",gitMBD,gitLBD);
+    
+    /* Scripts */
+    sec = (tsScripts & (((1 << 6) - 1) << 0)) >> 0;
+    min = (tsScripts & (((1 << 6) - 1) << 6)) >> 6;
+    hr  = (tsScripts & (((1 << 5) - 1) << 12)) >> 12;
+    yr  = (tsScripts & (((1 << 6) - 1) << 17)) >> 17;
+    mon = (tsScripts & (((1 << 4) - 1) << 23)) >> 23;
+    day = (tsScripts & (((1 << 5) - 1) << 27)) >> 27;
+
+    xil_printf("  Scripts : %08x = %02d/%02d/%02d - %02d:%02d:%02d\n\r",tsScripts,mon,day,yr,hr,min,sec); // 0's mean zero padded on left (UG643)
+    //xil_printf("  Scripts Git Hash: %08x%08x\n\r",gitMscr,gitLscr);
+    
+    /* Common */
+    sec = (tsCom & (((1 << 6) - 1) << 0)) >> 0;
+    min = (tsCom & (((1 << 6) - 1) << 6)) >> 6;
+    hr  = (tsCom & (((1 << 5) - 1) << 12)) >> 12;
+    yr  = (tsCom & (((1 << 6) - 1) << 17)) >> 17;
+    mon = (tsCom & (((1 << 4) - 1) << 23)) >> 23;
+    day = (tsCom & (((1 << 5) - 1) << 27)) >> 27;
+
+    xil_printf("  Common  : %08x = %02d/%02d/%02d - %02d:%02d:%02d\n\r",tsCom,mon,day,yr,hr,min,sec); // 0's mean zero padded on left (UG643)
+    //xil_printf("  Common Git Hash: %08x%08x\n\r",gitMcom,gitLcom);
+
+    /* SW */
+    sec = (tsSw & (((1 << 6) - 1) << 0)) >> 0;
+    min = (tsSw & (((1 << 6) - 1) << 6)) >> 6;
+    hr  = (tsSw & (((1 << 5) - 1) << 12)) >> 12;
+    yr  = (tsSw & (((1 << 6) - 1) << 17)) >> 17;
+    mon = (tsSw & (((1 << 4) - 1) << 23)) >> 23;
+    day = (tsSw & (((1 << 5) - 1) << 27)) >> 27;
+
+    xil_printf("  SW      : %08x = %02d/%02d/%02d - %02d:%02d:%02d\n\r",tsSw,mon,day,yr,hr,min,sec); // 0's mean zero padded on left (UG643)
+    //xil_printf("  SW Git Hash: %08x%08x\n\r",gitMsw,gitLsw);
+
+    /* IP */
+    sec = (tsIp & (((1 << 6) - 1) << 0)) >> 0;
+    min = (tsIp & (((1 << 6) - 1) << 6)) >> 6;
+    hr  = (tsIp & (((1 << 5) - 1) << 12)) >> 12;
+    yr  = (tsIp & (((1 << 6) - 1) << 17)) >> 17;
+    mon = (tsIp & (((1 << 4) - 1) << 23)) >> 23;
+    day = (tsIp & (((1 << 5) - 1) << 27)) >> 27;
+
+    xil_printf("  IP      : %08x = %02d/%02d/%02d - %02d:%02d:%02d\n\r",tsIp,mon,day,yr,hr,min,sec); // 0's mean zero padded on left (UG643)
+    //xil_printf("  IP Git Hash: %08x%08x\n\r",gitMip,gitLip);
+
+
+    xil_printf("\n\r************ Git Hashes ****************\n\r");
+    xil_printf("  PL      : %08x%08x\n\r",gitMtop,gitLtop);
+    xil_printf("  BD      : %08x%08x\n\r",gitMBD,gitLBD);
+    xil_printf("  Scripts : %08x%08x\n\r",gitMscr,gitLscr);
+    xil_printf("  Common  : %08x%08x\n\r",gitMcom,gitLcom);
+    xil_printf("  SW      : %08x%08x\n\r",gitMsw,gitLsw);
+    xil_printf("  IP      : %08x%08x\n\r",gitMip,gitLip);
+
+
+    /*** END ***/    
+    xil_printf("\n\r  %08x_%08x\n\r",tsTop,gitMtop);
     xil_printf("****************************************\n\r\n\r");
 
 }
