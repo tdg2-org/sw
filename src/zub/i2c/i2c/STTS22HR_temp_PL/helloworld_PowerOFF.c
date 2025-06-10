@@ -18,8 +18,8 @@
  */
 
 #include <stdio.h>
-#include "platform.h" 
-#include "xil_printf.h"
+#include "platform.h"
+#include "xil_printf.h" 
 #include "xil_types.h"
 #include <xil_io.h>
 #include "xparameters.h"
@@ -29,8 +29,13 @@
 #include "sleep.h"
 
 
-#define BD_REG32_ADDR       XPAR_AXIL_REG32_0_BASEADDR
-#define IIC_BASE_ADDRESS    XPAR_PL_AXI_IIC_0_BASEADDR
+#define BD_REG32_ADDR       PL_REG32_ADDR
+//#define IIC_BASE_ADDRESS    XPAR_AXI_IIC_0_BASEADDR
+//#define IIC_PL_BASE_ADDR    XPAR_I2C_PL_BASEADDR
+//#define IIC_PL2_BASE_ADDR   XPAR_I2C_PL_2_BASEADDR
+
+#define IIC_BASE_ADDRESS    XPAR_AXI_IIC_0_BASEADDR
+
 
 /*
 void ledCfg(void);
@@ -60,6 +65,8 @@ int main()
     //val = Xil_In32(0xFF030004); xil_printf("val=%x\r\n",val); //0xFF020020, 0xFF030020
     //val = Xil_In32(XPAR_XIICPS_0_BASEADDR + 0x4); xil_printf("val=%x\r\n",val); 
     //val = Xil_In32(XPAR_XIICPS_1_BASEADDR + 0x4); xil_printf("val=%x\r\n",val); 
+    
+    Xil_Out32(BD_REG32_ADDR + 0x48, 0x0);
     
     STTS22HTR_Read(IIC_BASE_ADDRESS,0x01,1);
     
@@ -96,16 +103,16 @@ int main()
       } else if (Ch == 'g') {   STTS22HTR_Read(IIC_BASE_ADDRESS,0x07,1); // High MSB
       } else if (Ch == 'h') {   
       } else if (Ch == 'i') {   STTS22HTR_Read(IIC_BASE_ADDRESS,0x04,1); // CTRL
-      } else if (Ch == 'j') {   STTS22HTR_Write(IIC_BASE_ADDRESS,0x04,0x4); // CTRL
+      } else if (Ch == 'j') {   STTS22HTR_Write(IIC_BASE_ADDRESS,0x04,0x4); // CTRL - write this first to configure/enable temp sensor
       } else if (Ch == 'k') {   
       } else if (Ch == 'l') {   STTS22HTR_GetTemp(IIC_BASE_ADDRESS,1);
       } else if (Ch == 'm') {   
       } else if (Ch == 'n') {   
       } else if (Ch == 'o') {   
-      } else if (Ch == 'q') {   
-      } else if (Ch == 'r') {   
-      } else if (Ch == 's') {   
-      } else if (Ch == 't') {
+      } else if (Ch == 'q') {   Xil_Out32(BD_REG32_ADDR + 0x48, 0x0);
+      } else if (Ch == 'r') {   Xil_Out32(BD_REG32_ADDR + 0x48, 0x1);
+      } else if (Ch == 's') {   Xil_Out32(BD_REG32_ADDR + 0x48, 0x2);
+      } else if (Ch == 't') {   val = Xil_In32(BD_REG32_ADDR + 0x48); xil_printf("val=%x\r\n",val);
         //val = Xil_In32(BD_REG32_2_ADDR + 0x0); xil_printf("gh0=%d\r\n",val);
         //val = Xil_In32(BD_REG32_2_ADDR + 0x4); xil_printf("gh1=%d\r\n",val);
         //val = Xil_In32(BD_REG32_2_ADDR + 0x8); xil_printf("ts=%d\r\n",val);

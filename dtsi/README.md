@@ -14,5 +14,5 @@
 ```
 
 * this is an append to an already existing node in the auto-generated device tree files from XSA
-* * axi address out of BD must be declared in BD
+* * axi address out of BD must be declared in BD, tested with my passthrough IP
 * * i2c_pl is name in address editor and axi interface
