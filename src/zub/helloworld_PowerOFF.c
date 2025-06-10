@@ -27,8 +27,8 @@
 #include <unistd.h>
 
 
-#define BD_REG32_ADDR   XPAR_AXIL_REG32_0_BASEADDR
-#define BD_REG32_2_ADDR 0xa0010000
+#define BD_REG32_ADDR   PL_REG32_ADDR
+//#define BD_REG32_2_ADDR 0xa0010000
 
 void ledCfg(void);
 void ledToggle(int shift, int bank, int onOff);
@@ -75,7 +75,7 @@ int main()
         powerOff();
       } else if (Ch == 'b') {break;
       } else if (Ch == 'a') {   xil_printf("NULL\r\n");
-      } else if (Ch == 'c') {   val = Xil_In32(BD_REG32_2_ADDR + 0x0); xil_printf("gh0=%d\r\n",val);
+      } else if (Ch == 'c') {   //val = Xil_In32(BD_REG32_2_ADDR + 0x0); xil_printf("gh0=%d\r\n",val);
       } else if (Ch == 'd') {   
       } else if (Ch == 'e') {   
       } else if (Ch == 'f') {   
