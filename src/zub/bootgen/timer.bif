@@ -1,0 +1,39 @@
+//arch = zynqmp; split = false; format = BIN
+the_ROM_image:
+{
+	/* bootloader */
+  [ bootloader,
+    destination_cpu = a53-0
+  ] /mnt/TDG_512/projects/6_zub/sw/work_timer/zub_hw/export/zub_hw/sw/boot/fsbl.elf
+	
+  /* elf app */
+  [ destination_cpu = a53-0,
+    exception_level = el-3
+  ] /mnt/TDG_512/projects/6_zub/sw/work_timer/zub_sw/build/zub_sw.elf
+
+  /* PL bitstream */
+	[destination_device = pl]/mnt/TDG_512/projects/6_zub/output_products/bit/top.bit
+}
+
+
+/*  bootgen command to run:
+/opt/xilinx/Vitis/2023.2/bin/bootgen -image /mnt/TDG_512/projects/6_zub/output_products/img3/testBif.bif -arch zynqmp -o /mnt/TDG_512/projects/6_zub/output_products/img3/BOOT.bin -w on
+
+bootgen -image ./timer.bif -arch zynqmp -o ../../../output_products/img3/BOOT.bin -w on
+
+bootgen -image ./timer.bif -arch zynqmp -o ./BOOT.bin -w on
+
+*/
+
+/* program_flash commands:
+
+emmc:
+program_flash -f ./BOOT.bin -offset 0 -flash_type emmc -emmc_partition_size 32 -fsbl ../../sw/work_timer/zub_hw/export/zub_hw/sw/boot/fsbl.elf -url TCP:127.0.0.1:3121
+program_flash -f ./BOOT.bin -offset 0 -flash_type emmc -emmc_partition_size 128 -partition_type fat32 -fsbl ../../sw/work_timer/zub_hw/export/zub_hw/sw/boot/fsbl.elf -url TCP:127.0.0.1:3121
+program_flash -f ./BOOT.bin -offset 0 -flash_type emmc -emmc_partition_size 32 -partition_type fat32 -fsbl ../../sw/work_timer/zub_hw/export/zub_hw/sw/boot/fsbl.elf -url TCP:127.0.0.1:3121
+
+qspi
+program_flash -f ./BOOT.bin -offset 0 -flash_type qspi-x4-single -fsbl ../../sw/work_timer/zub_hw/export/zub_hw/sw/boot/fsbl.elf -url TCP:127.0.0.1:3121
+
+
+*/
