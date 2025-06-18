@@ -18,3 +18,9 @@
 !dtsi/**/
 !dtsi/**/*.dtsi
 !dtsi/README.md
+
+# Allow 
+!py/
+!py/**/
+!py/**/*.py
+!dtsi/README.md
