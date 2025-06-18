@@ -1,4 +1,4 @@
-2025.1
+vivado/vitis 2025.1
 
 #### device tree appends for IP not in BD
 * do not name the file 'pl.dtsi', there is an auto-generated file of this name already, will be ignored.
