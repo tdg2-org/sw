@@ -1,4 +1,6 @@
 #include "xparameters.h"
+#include "xil_types.h"
+#include <unistd.h> // linux stuff including sleep/usleep etc.
 
 #define PL_REG32_ADDR   XPAR_PL_AXIL_REG32_0_BASEADDR
 
@@ -17,4 +19,12 @@
 void versionCtrl(void);
 void powerOff(void);
 void check0(void);
+void ledCfg(void);
+void ledToggle(int shift, int bank, int onOff);
+void ledCfgBit(int shift, int bank);
+void ledON(void);
+void ledOff(void); 
+void gitPrint (uint addr, const char *text);
+void timeStampPrint (uint addr, const char *text);
+void getTstamps(void);
 
