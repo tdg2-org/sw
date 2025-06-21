@@ -25,11 +25,10 @@
 #include "xparameters.h"
 #include "helpFunctions.h"
 #include <unistd.h>
-
+#include "bspconfig.h"
+#include "xuartps.h"
 
 #define BD_REG32_ADDR   PL_REG32_ADDR
-//#define BD_REG32_2_ADDR 0xa0010000
-
 
 int main()
 {
@@ -40,62 +39,66 @@ int main()
     check0();    
     versionCtrl();
     ledCfg();
-    unsigned int val;
-    //static unsigned gitLBD,gitMBD;
-    //gitLBD = Xil_In32(BD_REG32_ADDR + 0x18); // gitl
-    //gitMBD = Xil_In32(BD_REG32_ADDR + 0x1C); // gitm
+    unsigned int val, led=0;
     //xil_printf("  Scripts Git Hash: %0x%0x\n\r",gitMBD,gitLBD);
+    //val = Xil_In32(BD_REG32_2_ADDR + 0x4); xil_printf("gh1=%d\r\n",val);
+    //Xil_Out32(BD_REG32_2_ADDR + 0x18, 0x7);
 
-    //int val = 11;
-    //val = Xil_In32(0xa0010000);
-    //Xil_Out32(0xa0010000,0x5);
-    //xil_printf("Val = %d\n\r",val);
-    //xil_printf("Val = %x\n\r",val);
     xil_printf("Running...\r\n");
     s8 Ch;
     while (1) {
-      Ch = inbyte();
-      if (Ch == '\r') {
-          outbyte('\n');
-      }
-      outbyte(Ch);
-      xil_printf("\r\n");
+      //Ch = inbyte();
+      //if (Ch == '\r') {
+      //    outbyte('\n');
+      //}
+      if (XUartPs_IsReceiveData(STDIN_BASEADDRESS)) {
+        Ch = XUartPs_ReadReg(STDIN_BASEADDRESS, XUARTPS_FIFO_OFFSET);
+        outbyte(Ch);
+        xil_printf("\r\n");
 
-      if (Ch == 'p') {
-        xil_printf("\r\n POWER OFF\r\n");
-        usleep(10000);
-        powerOff();
-      } else if (Ch == 'b') {break;
-      } else if (Ch == 'a') {   xil_printf("NULL\r\n");
-      } else if (Ch == 'c') {   //val = Xil_In32(BD_REG32_2_ADDR + 0x0); xil_printf("gh0=%d\r\n",val);
-      } else if (Ch == 'd') {   
-      } else if (Ch == 'e') {   
-      } else if (Ch == 'f') {   
-      } else if (Ch == 'g') {   
-      } else if (Ch == 'h') {   
-      } else if (Ch == 'i') {   
-      } else if (Ch == 'j') {   
-      } else if (Ch == 'k') {   
-      } else if (Ch == 'l') {   
-      } else if (Ch == 'm') {   
-      } else if (Ch == 'n') {   
-      } else if (Ch == 'o') {   
-      } else if (Ch == 'q') {   
-      } else if (Ch == 'r') {   
-      } else if (Ch == 's') {   
-      } else if (Ch == 't') {
+        if (Ch == 'p') {
+          xil_printf("\r\n POWER OFF\r\n");
+          usleep(10000);
+          powerOff();
+        } else if (Ch == 'b') {break;
+        } else if (Ch == 'a') {   xil_printf("NULL\r\n");
+        } else if (Ch == 'c') {   //val = Xil_In32(BD_REG32_2_ADDR + 0x0); xil_printf("gh0=%d\r\n",val);
+        } else if (Ch == 'd') {   
+        } else if (Ch == 'e') {   
+        } else if (Ch == 'f') {   
+        } else if (Ch == 'g') {   
+        } else if (Ch == 'h') {   
+        } else if (Ch == 'i') {   
+        } else if (Ch == 'j') {   
+        } else if (Ch == 'k') {   
+        } else if (Ch == 'l') {   
+        } else if (Ch == 'm') {   
+        } else if (Ch == 'n') {   
+        } else if (Ch == 'o') {   
+        } else if (Ch == 'q') {   
+        } else if (Ch == 'r') {   
+        } else if (Ch == 's') {   
+        } else if (Ch == 't') {
 
-      
-      } else if (Ch == '0') {   ledCfg();
-      } else if (Ch == '1') {   ledON();
-      } else if (Ch == '2') {   ledOff();
-      } else if (Ch == '3') {
-      } else if (Ch == '4') {
-      } else if (Ch == '5') {
-      } else if (Ch == '6') {
-      } else if (Ch == '7') {
-      } else if (Ch == '8') {
-      } else if (Ch == '9') {
+        } else if (Ch == '0') {   ledCfg();
+        } else if (Ch == '1') {   ledON();
+        } else if (Ch == '2') {   ledOff();
+        } else if (Ch == '3') {
+        } else if (Ch == '4') {
+        } else if (Ch == '5') {
+        } else if (Ch == '6') {
+        } else if (Ch == '7') {
+        } else if (Ch == '8') {
+        } else if (Ch == '9') {
+        }
+      } // if (XUartPs_IsReceiveData(STDIN_BASEADDRESS))
+      msleep(300);
+      if (led) {
+        ledOff();
+        led=0;
+      } else {
+        ledON();
+        led=1;
       }
     } // while
     xil_printf("\n\r----------------------------------------\n\r");
@@ -107,20 +110,6 @@ int main()
     return 0;
 }
 
-//val = Xil_In32(BD_REG32_2_ADDR + 0x0); xil_printf("gh0=%d\r\n",val);
-//val = Xil_In32(BD_REG32_2_ADDR + 0x4); xil_printf("gh1=%d\r\n",val);
-//val = Xil_In32(BD_REG32_2_ADDR + 0x8); xil_printf("ts=%d\r\n",val);
-//val = Xil_In32(BD_REG32_2_ADDR + 0xC); xil_printf("const=%x\r\n",val);
-//val = Xil_In32(BD_REG32_2_ADDR + 0x10); xil_printf("const=%x\r\n",val);
-//Xil_Out32(BD_REG32_2_ADDR + 0x1C, 0x5);
-//Xil_Out32(BD_REG32_2_ADDR + 0x18, 0x7);
-
-// git_hash[31: 0];    //  0x0
-// git_hash[63:32];    //  0x4
-// timestamp;          //  0x8
-// git_hash_led[31: 0];//  0xC
-// git_hash_led[63:32];//  0x10
-// timestamp_led;      //  0x14
 
 
 
