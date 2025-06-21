@@ -9,7 +9,7 @@ import struct
 DEST_IP = "192.168.1.10"         # ZUBoard IP
 DEST_PORT = 5001                 # Port your UDP server is listening on
 SOURCE_IP = "192.168.1.100"      # Your host IP (USB-to-Ethernet)
-NUM_WORDS = 190                  # 64-bit words (184 max non-jumbo)
+NUM_WORDS = 190                  # 64-bit words (184 max non-jumbo) 190
 FIXED_UPPER = 0xABC0DEAD776600   # Upper 54 bits
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
