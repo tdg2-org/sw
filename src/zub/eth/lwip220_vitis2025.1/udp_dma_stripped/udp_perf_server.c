@@ -42,9 +42,12 @@ static struct perf_stats server;
 #define REPORT_INTERVAL_TIME (INTERIM_REPORT_INTERVAL * 20)
 
 
-#define NUM_DMA_WORDS 200
-#define DMA_BUF_SIZE_BYTES (NUM_DMA_WORDS * sizeof(u64))
-static u64 dma_buffer[NUM_DMA_WORDS];  // 8-byte aligned by default
+//#define NUM_DMA_WORDS 200
+//static u64 dma_buffer[NUM_DMA_WORDS];  // 8-byte aligned by default
+
+#define NUM_DMA_WORDS (9000 / sizeof(u64))  // 1125 words
+static u64 dma_buffer[NUM_DMA_WORDS];
+
 
 XAxiDma AxiDma;
 
@@ -97,7 +100,8 @@ static void udp_recv_perf_traffic(void *arg, struct udp_pcb *tpcb, struct pbuf *
 	s32_t recv_id;
 
 	memcpy(dma_buffer, p->payload, p->len);
-	
+	xil_printf("DMA buffer used: %d bytes (%d words)\r\n", p->len, p->len / 8);
+
 	start_my_dma((u32)p->len);	
 	
 	pbuf_free(p);
