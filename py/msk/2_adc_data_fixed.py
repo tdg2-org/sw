@@ -12,28 +12,40 @@ to adc_samples.txt.  First line contains the TX bit pattern.
 import numpy as np
 
 # ───────── user-adjustable parameters ─────────
-N_SYM              = 8 * 4 * 8      # number of symbols
+test_pattern = 'onalternatinges'  # Choose: 'zeros', 'ones', or 'alternating'
+
+N_SYM              = 8 * 4 * 8 * 4 * 4 * 4     # number of symbols
 FS_TX              = 200e6          # nominal TX sample rate (Hz)
 RSYM               = 10e6           # symbol rate          (Hz)
 F_IF               = 50e6           # IF (Hz)
-OUTFILE            = "../../../common/hdl/tb/adc_Tp30_C40_Jp01.txt"
+OUTFILE            = "../../../common/hdl/tb/data/adc_alternating.dat"
 FULL_SCALE         = 0.9            # 0…1 of 16-bit range
 
 # Gardner-related impairments
-TIMING_OFFSET_SYM  = 0.30           # initial offset (fraction of symbol)
-CLOCK_OFFSET_PPM   = 40             # constant rate error, ppm (+ faster)
-JITTER_STD_SAMPLES = 0.01           # rms sample jitter (samples)
+TIMING_OFFSET_SYM  = 0.0           # initial offset (fraction of symbol)
+    # +- 0.10 basic
+    # +- 0.49 extreme
+CLOCK_OFFSET_PPM   = 0 #10             # constant rate error, ppm (+ faster)
+    # +-10  basic
+    # +-100 extreme
+JITTER_STD_SAMPLES = 0.0 #0.001           # rms sample jitter (samples) 
+    # 0.001 – 0.003  realistic board level
+    # 0.005   stress the loop harsher but not absurd
+    # 0.01    extreme worse-case margin test
 # ──────────────────────────────────────────────
 
-# Fixed payload (32 bytes = 256 bits = N_SYM by construction)
-bytes_sv = [
-  0x90, 0x10, 0x00, 0x00, 0x00, 0x33, 0x00, 0x00,
-  0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x00, 0x00,
-  0x00, 0x77, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00,
-  0x01, 0x01, 0x00, 0x00, 0xff, 0xa5, 0x0f, 0xfe
-]
-bits = np.unpackbits(np.array(bytes_sv, dtype=np.uint8), bitorder='big').astype(np.int8)
-assert len(bits) == N_SYM, "Byte vector length must match N_SYM"
+# Generate bits vector of length N_SYM, and select test pattern
+bits = np.zeros(N_SYM, dtype=np.int8)  # Default to zeros
+
+# ---------- Select test pattern: 'zeros', 'ones', or 'alternating' ----------
+
+if test_pattern == 'zeros':
+  bits[:] = 0
+elif test_pattern == 'ones':
+  bits[:] = 1
+elif test_pattern == 'alternating':
+  bits[:] = np.arange(N_SYM) % 2
+# ---------------------------------------------------------------------------
 
 # ───────── MSK baseband generation (ideal clock) ─────────
 SPS = int(FS_TX / RSYM)            # 20 samples per symbol
@@ -58,7 +70,6 @@ x_tx = np.real(msk_bb * np.exp(1j * 2 * np.pi * F_IF * t_tx))
 # ───────── apply timing impairments ─────────
 # Target ADC sample times (seconds)
 ppm      = CLOCK_OFFSET_PPM * 1e-6
-offset_s = TIMING_OFFSET_SYM / RSYM
 dt_nom   = 1.0 / FS_TX
 n_adc    = n_total                   # keep same length for simplicity
 
@@ -69,6 +80,7 @@ t_adc += np.random.normal(0, JITTER_STD_SAMPLES * dt_nom, n_adc)
 
 # Interpolate to obtain ADC samples
 idx_adc = t_adc * FS_TX             # fractional indices into x_tx
+idx_adc = np.clip(idx_adc, 0, n_total-1)
 x_adc = np.interp(idx_adc, np.arange(n_total), x_tx, left=0.0, right=0.0)
 
 # ───────── scale and save ─────────
