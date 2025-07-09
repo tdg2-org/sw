@@ -12,13 +12,13 @@ to adc_samples.txt.  First line contains the TX bit pattern.
 import numpy as np
 
 # ───────── user-adjustable parameters ─────────
-test_pattern = 'onalternatinges'  # Choose: 'zeros', 'ones', or 'alternating'
+test_pattern = '7_alt'  # Choose: 'zeros', 'ones', or 'alternating'
 
 N_SYM              = 8 * 4 * 8 * 4 * 4 * 4     # number of symbols
 FS_TX              = 200e6          # nominal TX sample rate (Hz)
 RSYM               = 10e6           # symbol rate          (Hz)
 F_IF               = 50e6           # IF (Hz)
-OUTFILE            = "../../../common/hdl/tb/data/adc_alternating.dat"
+OUTFILE            = "../../../msk_modem/sim/data/adc_7_alt.dat"
 FULL_SCALE         = 0.9            # 0…1 of 16-bit range
 
 # Gardner-related impairments
@@ -43,8 +43,25 @@ if test_pattern == 'zeros':
   bits[:] = 0
 elif test_pattern == 'ones':
   bits[:] = 1
-elif test_pattern == 'alternating':
-  bits[:] = np.arange(N_SYM) % 2
+#elif test_pattern == 'alternating':
+#  bits[:] = np.arange(N_SYM) % 2
+elif test_pattern == 'alternating':          # 010101…
+    bits[:] = np.arange(N_SYM) & 1           # % 2 faster with bit-and
+else:
+    # expect strings like "2_alt", "3_alt", …
+    import re
+    m = re.fullmatch(r'(\d+)_alt', test_pattern)
+    if not m:
+        raise ValueError(f"Unknown test_pattern: {test_pattern}")
+
+    run = int(m.group(1))                    # N in "N_alt"
+    # make one period: run zeros followed by run ones  → length 2*run
+    period = np.r_[np.zeros(run,  dtype=np.int8),
+                   np.ones (run,  dtype=np.int8)]
+    # tile the period and slice to exact length
+    bits[:] = np.tile(period, (N_SYM + 2*run - 1) // (2*run))[:N_SYM]
+
+
 # ---------------------------------------------------------------------------
 
 # ───────── MSK baseband generation (ideal clock) ─────────

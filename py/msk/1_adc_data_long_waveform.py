@@ -16,7 +16,7 @@ N_SYM              = 8 * 4 * 8 * 4 * 4 * 4     # number of symbols
 FS_TX              = 200e6          # nominal TX sample rate (Hz)
 RSYM               = 10e6           # symbol rate          (Hz)
 F_IF               = 50e6           # IF (Hz)
-OUTFILE            = "../../../common/hdl/tb/data/adc_long.dat"
+OUTFILE            = "../../../msk_modem/sim/data/adc_long.dat"
 FULL_SCALE         = 0.9            # 0…1 of 16-bit range
 
 # Gardner-related impairments

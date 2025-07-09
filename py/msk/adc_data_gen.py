@@ -15,7 +15,7 @@ N_SYM        = 8*4*8          # number of MSK symbols to generate
 FS           = 200e6         # sampling rate (Hz)
 RSYM         = 10e6          # symbol rate   (Hz)
 F_IF         = 50e6          # intermediate frequency (Hz)
-OUTFILE      = "../../../common/hdl/tb/adc_samples.txt"
+OUTFILE      = "../../../msk_modem/sim/data/adc_samples.txt"
 FULL_SCALE   = 0.9           # 0 … 1.0 of 16-bit range to avoid clipping
 SEED         = 1234          # RNG seed for repeatability
 # ------------------------------------------------------------
