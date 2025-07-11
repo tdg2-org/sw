@@ -31,6 +31,19 @@ JITTER_STD_SAMPLES = 0.0 #0.001           # rms sample jitter (samples)
     # 0.005   stress the loop harsher but not absurd
     # 0.01    extreme worse-case margin test
 # ──────────────────────────────────────────────
+# Helper: convert float to string with desired precision, stripping "0."
+def fmt_float(val, scale=1000, digits=3):
+  # Example: 0.001 → '001'
+  return f"{int(round(abs(val)*scale)):0{digits}d}"
+
+# Build filename elements
+T_str = f"T{int(round(TIMING_OFFSET_SYM*100))}"              # E.g., 0.10 → 'T10'
+C_str = f"C{int(round(abs(CLOCK_OFFSET_PPM)))}"              # E.g., 10   → 'C10'
+J_str = f"J{fmt_float(JITTER_STD_SAMPLES,scale=1000,digits=3)}" # E.g., 0.001 → 'J001'
+
+# Build the OUTFILE name
+OUTFILE = f"../../../msk_modem/sim/data/adc_data_{T_str}_{C_str}_{J_str}.dat"
+# ──────────────────────────────────────────────
 
 # Fixed payload (32 bytes = 256 bits = N_SYM by construction)
 bytes_sv = [

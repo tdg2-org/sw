@@ -12,27 +12,41 @@ to adc_samples.txt.  First line contains the TX bit pattern.
 import numpy as np
 
 # ───────── user-adjustable parameters ─────────
-test_pattern = '7_alt'  # Choose: 'zeros', 'ones', or 'alternating'
+test_pattern = '5_alt'  # Choose: 'zeros', 'ones', or 'alt'
 
-N_SYM              = 8 * 4 * 8 * 4 * 4 * 4     # number of symbols
-FS_TX              = 200e6          # nominal TX sample rate (Hz)
-RSYM               = 10e6           # symbol rate          (Hz)
-F_IF               = 50e6           # IF (Hz)
-OUTFILE            = "../../../msk_modem/sim/data/adc_7_alt.dat"
+N_SYM              = 20000    # number of symbols
+FS_TX              = 200e6    # nominal TX sample rate (Hz)
+RSYM               = 10e6     # symbol rate          (Hz)
+F_IF               = 50e6     # IF (Hz)
+#OUTFILE            = "../../../msk_modem/sim/data/adc_5alt_Tp10.dat"
 FULL_SCALE         = 0.9            # 0…1 of 16-bit range
 
 # Gardner-related impairments
-TIMING_OFFSET_SYM  = 0.0           # initial offset (fraction of symbol)
+TIMING_OFFSET_SYM  = 0.43   # initial offset (fraction of symbol) * SHORTER WAVEFORMS, IMMEDIATE CORRECTION
     # +- 0.10 basic
     # +- 0.49 extreme
-CLOCK_OFFSET_PPM   = 0 #10             # constant rate error, ppm (+ faster)
+CLOCK_OFFSET_PPM   = 100 #10    # constant rate error, ppm (+ faster) *NEED LONGER WAVEFORMS
     # +-10  basic
     # +-100 extreme
-JITTER_STD_SAMPLES = 0.0 #0.001           # rms sample jitter (samples) 
+JITTER_STD_SAMPLES = 0.005 #0.001   # rms sample jitter (samples) 
     # 0.001 – 0.003  realistic board level
     # 0.005   stress the loop harsher but not absurd
     # 0.01    extreme worse-case margin test
 # ──────────────────────────────────────────────
+# Helper: convert float to string with desired precision, stripping "0."
+def fmt_float(val, scale=1000, digits=3):
+  # Example: 0.001 → '001'
+  return f"{int(round(abs(val)*scale)):0{digits}d}"
+
+# Build filename elements
+T_str = f"T{int(round(TIMING_OFFSET_SYM*100))}"              # E.g., 0.10 → 'T10'
+C_str = f"C{int(round(abs(CLOCK_OFFSET_PPM)))}"              # E.g., 10   → 'C10'
+J_str = f"J{fmt_float(JITTER_STD_SAMPLES,scale=1000,digits=3)}" # E.g., 0.001 → 'J001'
+
+# Build the OUTFILE name
+OUTFILE = f"../../../msk_modem/sim/data/adc_{test_pattern}_{T_str}_{C_str}_{J_str}.dat"
+# ──────────────────────────────────────────────
+
 
 # Generate bits vector of length N_SYM, and select test pattern
 bits = np.zeros(N_SYM, dtype=np.int8)  # Default to zeros
@@ -45,7 +59,7 @@ elif test_pattern == 'ones':
   bits[:] = 1
 #elif test_pattern == 'alternating':
 #  bits[:] = np.arange(N_SYM) % 2
-elif test_pattern == 'alternating':          # 010101…
+elif test_pattern == 'alt':          # 010101…
     bits[:] = np.arange(N_SYM) & 1           # % 2 faster with bit-and
 else:
     # expect strings like "2_alt", "3_alt", …
