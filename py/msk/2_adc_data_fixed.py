@@ -12,9 +12,9 @@ to adc_samples.txt.  First line contains the TX bit pattern.
 import numpy as np
 
 # ───────── user-adjustable parameters ─────────
-test_pattern = '5_alt'  # Choose: 'zeros', 'ones', or 'alt'
+test_pattern = '4_alt'  # Choose: 'zeros', 'ones', or 'alt'
 
-N_SYM              = 20000    # number of symbols
+N_SYM              = 20000*2    # number of symbols
 FS_TX              = 200e6    # nominal TX sample rate (Hz)
 RSYM               = 10e6     # symbol rate          (Hz)
 F_IF               = 50e6     # IF (Hz)
@@ -22,13 +22,13 @@ F_IF               = 50e6     # IF (Hz)
 FULL_SCALE         = 0.9            # 0…1 of 16-bit range
 
 # Gardner-related impairments
-TIMING_OFFSET_SYM  = 0.43   # initial offset (fraction of symbol) * SHORTER WAVEFORMS, IMMEDIATE CORRECTION
+TIMING_OFFSET_SYM  = 0.0   # initial offset (fraction of symbol) * SHORTER WAVEFORMS, IMMEDIATE CORRECTION
     # +- 0.10 basic
     # +- 0.49 extreme
-CLOCK_OFFSET_PPM   = 100 #10    # constant rate error, ppm (+ faster) *NEED LONGER WAVEFORMS
+CLOCK_OFFSET_PPM   = 0 #10    # constant rate error, ppm (+ faster) *NEED LONGER WAVEFORMS
     # +-10  basic
     # +-100 extreme
-JITTER_STD_SAMPLES = 0.005 #0.001   # rms sample jitter (samples) 
+JITTER_STD_SAMPLES = 0.000 #0.001   # rms sample jitter (samples) 
     # 0.001 – 0.003  realistic board level
     # 0.005   stress the loop harsher but not absurd
     # 0.01    extreme worse-case margin test
