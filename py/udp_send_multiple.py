@@ -12,7 +12,7 @@ DEST_PORT = 5001                 # Port your UDP server is listening on
 SOURCE_IP = "192.168.1.100"      # Your host IP (USB-to-Ethernet)
 NUM_WORDS = 1121                  # 64-bit words (184 max non-jumbo) jumbo max = 1125 (9000bytes)
 # zynqmp max 8968 bytes (1121 words). don't know why...
-NUM_FRAMES = 1                    # Number of identical frames to send
+NUM_FRAMES = 4                    # Number of identical frames to send
 FIXED_UPPER = 0xABC0DEAD7700   # Upper 54 bits
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
