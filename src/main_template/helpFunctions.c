@@ -364,3 +364,56 @@ void timeStampPrint (uint addr, const char *text)
 
     xil_printf("TIMESTAMP (%s):%08x = %02d/%02d/%02d - %02d:%02d:%02d\n\r",text,tStamp,mon,day,yr,hr,min,sec); // 0's mean zero padded on left (UG643)
 }
+
+/*************************************************************************************************/
+//
+/*************************************************************************************************/
+
+#define BIT(n)           (1u << (n))
+#define U32_MAX          0xFFFFFFFFu
+#define GENMASK(h,l)    (((U32_MAX << (l)) & (U32_MAX >> (31 - (h)))))
+
+//static inline void reg_set_bits(uintptr_t base, uint32_t off, uint32_t mask) 
+void reg_set_bits(uintptr_t base, uint32_t off, uint32_t idx) 
+{
+  uint32_t mask = BIT(idx);
+  uint32_t v = Xil_In32(base + off);
+  Xil_Out32(base + off, v | mask);
+}
+
+//void reg_clear_bits(uintptr_t base, uint32_t off, uint32_t mask) 
+void reg_clear_bits(uintptr_t base, uint32_t off, uint32_t msb, uint32_t lsb) 
+{
+  uint32_t mask = GENMASK(msb,lsb);
+  uint32_t v = Xil_In32(base + off);
+  Xil_Out32(base + off, v & ~mask);
+}
+
+void reg_update_bits(uintptr_t base, uint32_t off, uint32_t mask, uint32_t val_masked) 
+{
+  uint32_t v = Xil_In32(base + off);
+  v = (v & ~mask) | (val_masked & mask);
+  Xil_Out32(base + off, v);
+}
+
+/* Write a field given shift and width (width 1..32). */
+void reg_write_field(uintptr_t base, uint32_t off, unsigned shift, unsigned width, uint32_t val) 
+{
+  uint32_t mask = (width >= 32) ? U32_MAX : ((1u << width) - 1u);
+  mask <<= shift;
+  reg_update_bits(base, off, mask, (val << shift));
+}
+
+/*
+// Set bit 5
+reg_set_bits(BASE_ADDR, 0x78, BIT(5));
+
+// Clear bits [3:0]
+reg_clear_bits(BASE_ADDR, 0x78, 3,0);
+
+// Write field [11:8] = 0xA
+reg_write_field(BASE_ADDR, 0x78, 8, 4, 0xA);
+
+// Update bits via mask/value directly (e.g., set [7:4] = 0xC)
+reg_update_bits(BASE_ADDR, 0x78, GENMASK(7,4), 0xC << 4);
+*/

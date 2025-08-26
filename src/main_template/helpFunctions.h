@@ -28,3 +28,8 @@ void gitPrint (uint addr, const char *text);
 void timeStampPrint (uint addr, const char *text);
 void getTstamps(void);
 void getVersions(void);
+
+void reg_set_bits(uintptr_t base, uint32_t off, uint32_t idx);
+void reg_clear_bits(uintptr_t base, uint32_t off, uint32_t msb, uint32_t lsb);
+void reg_update_bits(uintptr_t base, uint32_t off, uint32_t mask, uint32_t val_masked);
+void reg_write_field(uintptr_t base, uint32_t off, unsigned shift, unsigned width, uint32_t val);
