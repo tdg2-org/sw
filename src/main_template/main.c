@@ -7,10 +7,10 @@
 #include "xparameters.h"
 #include "helpFunctions.h"
 #include <unistd.h>
-#include "xuartps.h"
-
 #include "platform.h"
-#include "xaxidma.h"
+
+//#include "xuartps.h"
+//#include "xaxidma.h"
 
 #define BD_REG32_ADDR   PL_REG32_ADDR
 
