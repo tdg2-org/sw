@@ -12,6 +12,10 @@
 
 #define BD_REG32_ADDR   PL_REG32_ADDR
 
+#include "xilfpgaFunc_adg.h"
+//#include "RM0_RM_led_2.h"
+//#include "RM1_RM_led2_2.h"
+
 
 int main()
 {
@@ -49,9 +53,9 @@ int main()
         } else if (Ch == 'a') {   xil_printf("NULL\r\n");
         } else if (Ch == 'c') {   //val = Xil_In32(BD_REG32_2_ADDR + 0x0); xil_printf("gh0=%d\r\n",val);
         } else if (Ch == 'd') {   
-        } else if (Ch == 'e') {   
+        } else if (Ch == 'e') {   loadPartialBit((UINTPTR)RM0_RM_led_2_partial_bin, RM0_RM_led_2_partial_bin_len);
         } else if (Ch == 'f') {   
-        } else if (Ch == 'g') {   
+        } else if (Ch == 'g') {   loadPartialBit((UINTPTR)RM1_RM_led2_2_partial_bin, RM1_RM_led2_2_partial_bin_len);
         } else if (Ch == 'h') {   
         } else if (Ch == 'i') {   
         } else if (Ch == 'j') {   
