@@ -8,8 +8,8 @@
 #include "helpFunctions.h"
 #include <unistd.h>
 #include "platform.h"
+#include "xuartps.h"
 
-//#include "xuartps.h"
 //#include "xaxidma.h"
 
 #define BD_REG32_ADDR   PL_REG32_ADDR
