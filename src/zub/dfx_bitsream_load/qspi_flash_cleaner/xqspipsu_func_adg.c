@@ -15,7 +15,7 @@ requires specific build with DFX two RMs (exact partial bitstreams sizes):
 //#include "xqspipsu_flash_config.h"
 //#include "xil_printf.h"
 
-#include "xqspipsu_generic_flash_polled_example.h"
+#include "xqspipsu_func_adg.h"
 
 
 

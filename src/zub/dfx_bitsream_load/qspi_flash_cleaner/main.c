@@ -11,7 +11,7 @@
 #include "xuartps.h"
 
 #include "xilfpgaFunc_adg.h"
-#include "xqspipsu_generic_flash_polled_example.h"
+#include "xqspipsu_func_adg.h"
 
 
 #define BD_REG32_ADDR   PL_REG32_ADDR
